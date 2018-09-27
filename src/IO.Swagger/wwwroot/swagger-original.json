@@ -1,0 +1,250 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "The purpose is to provide a population prevalence for a given disease and country.  Using the country population and a disease prevalence factor, a potential patient population for the disease can be returned.",
+    "version" : "0.1",
+    "title" : "Disease Prevalence API"
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/ctos-design/IndicationPrevalenceAPI/0.1",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/prevalence" : {
+      "get" : {
+        "tags" : [ "Prevalences" ],
+        "summary" : "Gets all availalbe prevalence",
+        "description" : "Returns a list containing all country names, population, and prevalence factors. The list supports paging.",
+        "operationId" : "searchPrevalence",
+        "parameters" : [ {
+          "name" : "pageSize",
+          "in" : "query",
+          "description" : "Number of persons returned",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "exclusiveMaximum" : false,
+          "minimum" : 0,
+          "exclusiveMinimum" : true,
+          "multipleOf" : 10,
+          "format" : "int32"
+        }, {
+          "name" : "pageNumber",
+          "in" : "query",
+          "description" : "Page number",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "A list of Prevalence",
+            "schema" : {
+              "$ref" : "#/definitions/Prevalences"
+            }
+          },
+          "500" : {
+            "description" : "An unexpected error occured.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Creates a prevalence",
+        "description" : "Adds a new prevalence object to the prevalence list.",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "prevalance",
+          "description" : "The prevalance to create.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Prevalence"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Prevalance succesfully created."
+          },
+          "400" : {
+            "description" : "Prevalance couldn't have been created."
+          },
+          "500" : {
+            "description" : "An unexpected error occured.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/prevalence/{countryName}/{diseaseName}" : {
+      "get" : {
+        "summary" : "Gets a prevalence for a country",
+        "description" : "Returns a single country prevalance for a disease name.",
+        "parameters" : [ {
+          "name" : "countryName",
+          "in" : "path",
+          "description" : "The country's name",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "diseaseName",
+          "in" : "path",
+          "description" : "The disease name",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "A Prevalance factor",
+            "schema" : {
+              "$ref" : "#/definitions/Prevalence"
+            }
+          },
+          "404" : {
+            "description" : "Prevalence does not exist."
+          },
+          "500" : {
+            "description" : "An unexpected error occured.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Deletes a prevalance",
+        "description" : "Delete a single prevalence object identified via its countryName and diseaseName",
+        "parameters" : [ {
+          "name" : "countryName",
+          "in" : "path",
+          "description" : "The country's name",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "diseaseName",
+          "in" : "path",
+          "description" : "The disease name",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Prevalance successfully deleted."
+          },
+          "404" : {
+            "description" : "Prevalence does not exist."
+          },
+          "500" : {
+            "description" : "An unexpected error occured.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Prevalence" : {
+      "required" : [ "diseaseName" ],
+      "properties" : {
+        "diseaseName" : {
+          "type" : "string"
+        },
+        "countryName" : {
+          "type" : "string"
+        },
+        "population" : {
+          "type" : "integer"
+        },
+        "prevalanceFactor" : {
+          "type" : "integer"
+        }
+      },
+      "description" : "A prevalence object",
+      "example" : {
+        "diseaseName" : "diseaseName",
+        "prevalanceFactor" : 6,
+        "countryName" : "countryName",
+        "population" : 0
+      }
+    },
+    "Prevalences" : {
+      "title" : "Prevalences",
+      "type" : "array",
+      "description" : "A group of prevalence objects",
+      "items" : {
+        "$ref" : "#/definitions/Prevalence"
+      },
+      "uniqueItems" : true,
+      "minItems" : 10,
+      "maxItems" : 100
+    },
+    "Error" : {
+      "required" : [ "code", "message" ],
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    }
+  },
+  "parameters" : {
+    "username" : {
+      "name" : "username",
+      "in" : "path",
+      "description" : "The person's username",
+      "required" : true,
+      "type" : "string"
+    },
+    "countryName" : {
+      "name" : "countryName",
+      "in" : "path",
+      "description" : "The country's name",
+      "required" : true,
+      "type" : "string"
+    },
+    "diseaseName" : {
+      "name" : "diseaseName",
+      "in" : "path",
+      "description" : "The disease name",
+      "required" : true,
+      "type" : "string"
+    },
+    "pageSize" : {
+      "name" : "pageSize",
+      "in" : "query",
+      "description" : "Number of persons returned",
+      "required" : false,
+      "type" : "integer",
+      "maximum" : 100,
+      "exclusiveMaximum" : false,
+      "minimum" : 0,
+      "exclusiveMinimum" : true,
+      "multipleOf" : 10,
+      "format" : "int32"
+    },
+    "pageNumber" : {
+      "name" : "pageNumber",
+      "in" : "query",
+      "description" : "Page number",
+      "required" : false,
+      "type" : "integer"
+    }
+  },
+  "responses" : {
+    "Standard500ErrorResponse" : {
+      "description" : "An unexpected error occured.",
+      "schema" : {
+        "$ref" : "#/definitions/Error"
+      }
+    },
+    "PrevalenceDoesNotExistResponse" : {
+      "description" : "Prevalence does not exist."
+    }
+  }
+}
