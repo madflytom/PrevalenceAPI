@@ -143,6 +143,7 @@ namespace IO.Swagger.Controllers
             {
                 _context.Add(prevalance);
                 await _context.SaveChangesAsync();
+                Console.WriteLine("test checking");
                 return Ok(prevalance);
             }
             else {
